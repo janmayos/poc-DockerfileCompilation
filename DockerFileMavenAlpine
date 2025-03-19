@@ -1,0 +1,22 @@
+FROM alpine:latest
+
+# Install dependencies
+RUN apk update && \
+    apk add openjdk8 maven openssh
+
+# Set JAVA_HOME environment variable
+ENV JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk
+ENV PATH="$JAVA_HOME/bin:${PATH}"
+
+# Configure SSH
+RUN mkdir /var/run/sshd && \
+    echo 'root:root' | chpasswd && \
+    sed -i 's/#PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config && \
+    sed -i 's/.*PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config && \
+    ssh-keygen -A  # Generate SSH host keys
+
+# Expose SSH port
+EXPOSE 22
+
+# Start SSH service
+CMD ["/usr/sbin/sshd", "-D"]
