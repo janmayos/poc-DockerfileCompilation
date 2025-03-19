@@ -1,4 +1,4 @@
-FROM docker:latest
+FROM docker:dind
 
 # Install dependencies
 RUN apk update && \
@@ -19,4 +19,5 @@ RUN mkdir /var/run/sshd && \
 EXPOSE 22
 
 # Start SSH service
+#CMD ["nohup dockerd > /var/log/dockerd.log 2>&1 & sleep infinity & /usr/sbin/sshd -D"]
 CMD ["/usr/sbin/sshd", "-D"]

@@ -20,14 +20,21 @@ Inicia el servicio sshd
     * /usr/sbin/sshd
 
 Docker agente
+
+ Pasos para usar Docker dentro del contenedor en Windows
+Habilita el acceso al socket de Docker
+Abre Docker Desktop y ve a:
+
+Settings → General → Activa "Expose daemon on tcp://localhost:2375 without TLS"
+Guarda y reinicia Docker Desktop.
+
 * Construir la imagen Docker:
     * docker build -t docker-java17-ssh:latest -f .\DockerFile-DockerSSH .
 * Ejecutar el contenedor
     * Con privilegios
         * docker run -d --privileged -p 20229:22 --name jenkins-agent docker-java17-ssh:latest
     * Normal
-        * docker run -d 
-         -p 20229:22 --name jenkins-agent docker-java17-ssh:latest
+        * docker run -d -p 20229:22 --name jenkins-agent docker-java17-ssh:latest
 * Acceder desde exec
     * Con privilegios
         *  docker exec --privileged -it jenkins-agent /bin/sh
