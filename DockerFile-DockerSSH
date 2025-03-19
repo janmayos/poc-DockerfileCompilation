@@ -1,0 +1,22 @@
+FROM docker:latest
+
+# Install dependencies
+RUN apk update && \
+    apk add openjdk17-jdk openssh
+
+# Set JAVA_HOME environment variable for Java 17
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+ENV PATH="$JAVA_HOME/bin:${PATH}"
+
+# Configure SSH
+RUN mkdir /var/run/sshd && \
+    echo 'root:root' | chpasswd && \
+    sed -i 's/#PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config && \
+    sed -i 's/.*PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config && \
+    ssh-keygen -A  # Generate SSH host keys
+
+# Expose SSH port
+EXPOSE 22
+
+# Start SSH service
+CMD ["/usr/sbin/sshd", "-D"]
